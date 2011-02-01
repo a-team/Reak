@@ -25,6 +25,10 @@ module Reak
         @transformer.apply statements.parse(code)
       end
 
+      def parse_string(string)
+        parse(string)
+      end
+
       ##
       # Allows writing
       #   `foo`

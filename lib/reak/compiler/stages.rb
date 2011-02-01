@@ -1,5 +1,5 @@
 module Reak
-  module Compiler
+  class Compiler
     class Parser < Rubinius::Compiler::Parser
       def initialize(compiler, last)
         super
@@ -15,7 +15,7 @@ module Reak
 
     class FileParser < Parser
       stage :reak_file
-      next_stage Generator
+      next_stage Rubinius::Compiler::Generator
 
       def input(file, line = 1)
         @file = file
@@ -29,7 +29,7 @@ module Reak
 
     class StringParser < Parser
       stage :reak_string
-      next_stage Generator
+      next_stage Rubinius::Compiler::Generator
 
       def input(string, name = "(eval)", line = 1)
         @input = string

@@ -10,7 +10,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'reak'
 require 'pp'
 
-ast, sexp, bench, syntax, show_tree, evals = false, false, false, :reak, false, []
+ast, bytecode, sexp, bench, syntax, show_tree, evals = false, false, false, false, :reak, false, []
 
 options = Rubinius::Options.new "Usage: #$0 [options] [script]", 20
 
@@ -30,12 +30,16 @@ options.on "-s", "SYNTAX", "What SYNTAX to use (ansi, gst, reak)" do |s|
   syntax = s.to_sym
 end
 
-options.on "-B", "Benchmark parsing" do
+options.on "-b", "Benchmark parsing" do
   bench = true
 end
 
 options.on "-T", "Show parse result (use this if -A fails)" do
   show_tree = true
+end
+
+options.on "-B", "Show bytecode" do
+  bytecode = true
 end
 
 options.on "-h", "--help", "Display this help" do
@@ -76,7 +80,16 @@ display = proc do |code|
   end
 
   begin
-    puts Reak::Compiler.new.compile(code).call.reak_send("printString")
+    cm = Reak::Compiler.compile_string(code)
+    if bytecode
+      puts "======= Bytecode ======="
+      puts cm.decode
+      puts "------------------------"
+    end
+    code = Reak::Code.new
+    ss = Rubinius::StaticScope.new Object
+    Rubinius.attach_method :call, cm, ss, code
+    pp code.call.reak_send("printString")
   rescue Exception => e
     e.render
   end

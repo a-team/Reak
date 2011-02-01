@@ -83,7 +83,7 @@ module Reak
       end
 
       rule :reserved => "self" do
-        Reak::Syntax::Self.new
+        Reak::AST::Self.new
       end
 
       rule :reserved => "super" do

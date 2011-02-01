@@ -1,4 +1,9 @@
 require 'parslet'
+require 'reak/parser/ansi_smalltalk'
+require 'reak/parser/smalltalk80'
+require 'reak/parser/gnu_smalltalk'
+require 'reak/parser/reak_smalltalk'
+require 'reak/parser/transformer'
 
 module Reak
   ##
@@ -22,19 +27,8 @@ module Reak
   # * http://chronos-st.blogspot.com/2007/12/smalltalk-in-one-page.html
   # * http://www.fit.vutbr.cz/study/courses/OMP/public/software/sqcdrom2/Squeak_Swiki/409.html
   module Parser
-    autoload :AnsiSmalltalk,  'reak/parser/ansi_smalltalk'
-    autoload :Smalltalk80,    'reak/parser/smalltalk80'
-    autoload :GnuSmalltalk,   'reak/parser/gnu_smalltalk'
-    autoload :ReakSmalltalk,  'reak/parser/reak_smalltalk'
-    autoload :Transformer,    'reak/parser/transformer'
-
-    def self.new(syntax = :reak, *args)
-      case syntax.to_sym
-      when :ansi      then AnsiSmalltalk.new(*args)
-      when :reak, nil then ReakSmalltalk.new(*args)
-      when :gst, :gnu then GnuSmalltalk.new(*args)
-      else fail "unkown syntax #{syntax.inspect}"
-      end
+    def self.new(file, line = 1)
+      ReakSmalltalk.new
     end
   end
 end
